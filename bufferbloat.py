@@ -68,6 +68,12 @@ parser.add_argument('--pie',
 
 
 
+parser.add_argument('--flows',
+                    type=int,
+                    help="Do we want flows? 0/1",
+                    default=1)
+
+
 
 # Linux uses CUBIC-TCP by default that doesn't have the usual sawtooth
 # behaviour.  For those who are curious, invoke this script with
@@ -188,7 +194,7 @@ def start_iperf(net):
     # long lived TCP flow.
     # Hint: uses -P 10 in the iperf argument to introduce 10 flows
     print 'Open iperf connection iperf -c %s -t %d' % (h2.IP(), args.time) 
-    h1.popen("iperf -c %s -t %d" % (h2.IP(), args.time))
+    h1.popen("iperf -c %s -t %d -P %s" % (h2.IP(), args.time, args.flows))
     
     # Note that unlike the CLI, where mininet automatically translates
     # nodes names (like h1) to IP addresses, here it's up to you.
