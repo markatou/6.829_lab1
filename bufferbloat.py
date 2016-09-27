@@ -60,6 +60,15 @@ parser.add_argument('--maxq',
 # TODO: include more parser parameters to pass pie/nopie argument
 # and num_flows argument from run.sh
 
+
+parser.add_argument('--pie',
+                    type=int,
+                    help="Do we want pie? 0/1",
+                    default=0)
+
+
+
+
 # Linux uses CUBIC-TCP by default that doesn't have the usual sawtooth
 # behaviour.  For those who are curious, invoke this script with
 # --cong cubic and see what happens...
@@ -133,11 +142,14 @@ class BBTopo(Topo):
         # Note: use "bw=bw_host" instead of "bw=bw-host"
         # Note: needs to add in cls1=BasicIntf, cls2=BasicIntf when setup the link
         # Hint: PIE inteface sits on the switch side, so which cls you need to change?
-        
-        self.addLink(host1, s0, cls2=BasicIntf,
+        if args.pie == 0:
+            k = BasicIntf
+        else:
+            k = PIEIntf 
+        self.addLink(host1, s0, cls1=k,
                    bw=args.bw_host, delay=args.delay, loss=0, 
                    max_queue_size=args.maxq, use_htb=True)
-        self.addLink(host2, s0, cls1=BasicIntf,
+        self.addLink(host2, s0, cls2=BasicIntf,
                    bw=args.bw_net, delay=args.delay, loss=0, 
                    max_queue_size=args.maxq, use_htb=True)
 
@@ -234,7 +246,7 @@ def bufferbloat():
     # number may be 1 or 2.  Ensure you use the correct number.
     print "Start queue"
 
-    qmon = start_qmon(iface ='s0-eth2')
+    qmon = start_qmon(iface ='s0-eth2', outfile = '%s/q.txt'% args.dir)
 
     # TODO: Start iperf, webservers, ping.
     print "Start iperf, webservers, ping"
@@ -271,22 +283,24 @@ def getWebStats(net):
     h2 = net.getNodeByName('h2')
 
     print "Getting Webpage Stats"
-
+    times = []
     start_time = time()
     while True:
-        # do the measurement (say) 3 times Where is the website??????.
-        print "%s/http/index.html" % h2.IP()
-        getPage = h1.popen("curl -o /dev/null -s -w %%\{time-total\} %s/http/>> tim" % h2.IP())
+        # do the measurement (say) 3 times 
+        getPage = h1.popen("curl -o /dev/null -s -w %%{time_total} %s/http/" % h2.IP()).communicate()
+        times.append(float(getPage[0]))
         sleep(5)
         now = time()
         delta = now - start_time
 
-        if delta > args.time:
+        if delta > args.time+10:
             break
-        print "%.1fs left..." % (args.time  - delta)
-
+        print "%.1fs left..." % (args.time +10  - delta)
+    print "The meassurements are:"
+    print times
    
-
+    print "On average we fetch the webpage in:"
+    print np.mean(times)
 
 
 

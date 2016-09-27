@@ -11,7 +11,7 @@ bwnet=10
 bwhost=1000
 # TODO: If you want the RTT to be 20ms what should the delay on each
 # link be?  Set this value correctly.
-pie=1 
+
 iperf_port=5001
 delay=5
 maxq=100
@@ -22,7 +22,7 @@ dir=n1-pie
 
 mn -c
 
-python bufferbloat.py --bw-host $bwhost --pie $pie --bw-net $bwnet  --delay $delay --maxq $maxq  --dir $dir 
+python bufferbloat.py --bw-host $bwhost --bw-net $bwnet  --delay $delay --maxq $maxq  --dir $dir 
 
 
 # TODO: Ensure the input file names match the ones you use in
