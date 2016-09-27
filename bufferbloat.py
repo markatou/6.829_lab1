@@ -125,14 +125,23 @@ class BBTopo(Topo):
         # Here I have created a switch.  If you change its name, its
         # interface names will change from s0-eth1 to newname-eth1.
         s0 = self.addSwitch('s0')
-
+        host1 = self.addHost('h1', cpu=.2)
+        host2 = self.addHost('h2', cpu=.2)
         # TODO: Add links -- with appropriate characteristics 
         # h1 has fast connection
         # h2 has slow uplink connection
         # Note: use "bw=bw_host" instead of "bw=bw-host"
         # Note: needs to add in cls1=BasicIntf, cls2=BasicIntf when setup the link
         # Hint: PIE inteface sits on the switch side, so which cls you need to change?
-	    
+        
+        self.addLink(host1, s0, cls2=BasicIntf,
+                   bw=args.bw_host, delay=args.delay, loss=0, 
+                   max_queue_size=args.maxq, use_htb=True)
+        self.addLink(host2, s0, cls1=BasicIntf,
+                   bw=args.bw_net, delay=args.delay, loss=0, 
+                   max_queue_size=args.maxq, use_htb=True)
+
+
         return
 
 # Simple wrappers around monitoring utilities.  You are welcome to
@@ -155,16 +164,20 @@ def start_qmon(iface, interval_sec=0.1, outfile="q.txt"):
 
 def start_iperf(net):
     h2 = net.getNodeByName('h2')
+    h1 = net.getNodeByName('h1')
     print "Starting iperf server..."
     # For those who are curious about the -w 16m parameter, it ensures
     # that the TCP flow is not receiver window limited.  If it is,
     # there is a chance that the router buffer may not get filled up.
     server = h2.popen("iperf -s -w 16m")
 
+
     # TODO: Start the iperf client on h1.  Ensure that you create a
     # long lived TCP flow.
     # Hint: uses -P 10 in the iperf argument to introduce 10 flows
-
+    print 'Open iperf connection' 
+    h1.popen("iperf -c %s -t %d" % (h2.IP(), args.time))
+    
     # Note that unlike the CLI, where mininet automatically translates
     # nodes names (like h1) to IP addresses, here it's up to you.
 
@@ -183,6 +196,12 @@ def start_ping(net, outfile="ping.txt"):
     # to popen, you can redirect cmd's output using shell syntax.
     # i.e. ping ... > /path/to/ping.
     # Hint: Use -i 0.1 in ping to ping every 0.1 sec
+    print "Starting PingTrain!!" 
+    h1 = net.getNodeByName('h1')
+    h2 = net.getNodeByName('h2') 
+
+    h1.popen("ping -i 0.1 %s > %s/%s" %( h2.IP(), args.dir, outfile), shell = True) 
+
 
 def bufferbloat():
     if not os.path.exists(args.dir):
@@ -213,8 +232,16 @@ def bufferbloat():
     # interface?  The interface numbering starts with 1 and increases.
     # Depending on the order you add links to your network, this
     # number may be 1 or 2.  Ensure you use the correct number.
+    print "Start queue"
+
+    qmon = start_qmon(iface ='s0-eth2')
 
     # TODO: Start iperf, webservers, ping.
+    print "Start iperf, webservers, ping"
+
+    start_iperf(net)
+    start_webserver(net)
+    start_ping(net) 
 
     # TODO: measure the time it takes to complete webpage transfer
     # from h1 to h2 (say) 3 times.  Hint: check what the following
@@ -222,7 +249,7 @@ def bufferbloat():
     # Now use the curl command to fetch webpage from the webserver you
     # spawned on host h1 (not from google!)
     # Hint: Where is the webserver located?
-
+    
     # Hint: have a separate function to do this and you may find the
     # loop below useful.
     start_time = time()

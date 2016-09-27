@@ -21,6 +21,11 @@ dir=n1-nopie
 
 # TODO: Run bufferbloat.py here...
 
+mn -c
+
+python bufferbloat.py --bw-host $bwhost --bw-net $bwnet  --delay 10 --maxq $maxq --cong 1500 --dir $dir 
+
+
 # TODO: Ensure the input file names match the ones you use in
 # bufferbloat.py script.  Also ensure the plot file names match
 # the required naming convention when submitting your tarball.
