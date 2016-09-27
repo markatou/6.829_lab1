@@ -175,7 +175,7 @@ def start_iperf(net):
     # TODO: Start the iperf client on h1.  Ensure that you create a
     # long lived TCP flow.
     # Hint: uses -P 10 in the iperf argument to introduce 10 flows
-    print 'Open iperf connection' 
+    print 'Open iperf connection iperf -c %s -t %d' % (h2.IP(), args.time) 
     h1.popen("iperf -c %s -t %d" % (h2.IP(), args.time))
     
     # Note that unlike the CLI, where mininet automatically translates
@@ -249,21 +249,9 @@ def bufferbloat():
     # Now use the curl command to fetch webpage from the webserver you
     # spawned on host h1 (not from google!)
     # Hint: Where is the webserver located?
-    
+    getWebStats(net)
     # Hint: have a separate function to do this and you may find the
-    # loop below useful.
-    start_time = time()
-    while True:
-        # do the measurement (say) 3 times.
-
-        sleep(5)
-        now = time()
-        delta = now - start_time
-
-        if delta > args.time:
-            break
-        print "%.1fs left..." % (args.time - delta)
-
+    # loop below useful.h2=net, h1=house
     # TODO: compute average (and standard deviation) of the fetch
     # times.  You don't need to plot them.  Just note it in your
     # README and explain.
@@ -274,6 +262,38 @@ def bufferbloat():
     # Ensure that all processes you create within Mininet are killed.
     # Sometimes they require manual killing.
     Popen("pgrep -f webserver.py | xargs kill -9", shell=True).wait()
+
+
+
+
+def getWebStats(net):
+    h1 = net.getNodeByName('h1')
+    h2 = net.getNodeByName('h2')
+
+    print "Getting Webpage Stats"
+
+    start_time = time()
+    while True:
+        # do the measurement (say) 3 times Where is the website??????.
+        print "%s/http/index.html" % h2.IP()
+        getPage = h1.popen("curl -o /dev/null -s -w %%\{time-total\} %s/http/>> tim" % h2.IP())
+        sleep(5)
+        now = time()
+        delta = now - start_time
+
+        if delta > args.time:
+            break
+        print "%.1fs left..." % (args.time  - delta)
+
+   
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     bufferbloat()

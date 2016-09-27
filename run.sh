@@ -13,7 +13,7 @@ bwhost=1000
 # link be?  Set this value correctly.
 
 iperf_port=5001
-
+delay=5
 maxq=100
 dir=n1-nopie
 
@@ -23,7 +23,7 @@ dir=n1-nopie
 
 mn -c
 
-python bufferbloat.py --bw-host $bwhost --bw-net $bwnet  --delay 10 --maxq $maxq --cong 1500 --dir $dir 
+python bufferbloat.py --bw-host $bwhost --bw-net $bwnet  --delay $delay --maxq $maxq  --dir $dir 
 
 
 # TODO: Ensure the input file names match the ones you use in
