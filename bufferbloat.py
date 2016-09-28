@@ -140,8 +140,8 @@ class BBTopo(Topo):
         # Here I have created a switch.  If you change its name, its
         # interface names will change from s0-eth1 to newname-eth1.
         s0 = self.addSwitch('s0')
-        host1 = self.addHost('h1', cpu=.2)
-        host2 = self.addHost('h2', cpu=.2)
+        h1 = self.addHost('h1')
+        h2 = self.addHost('h2')
         # TODO: Add links -- with appropriate characteristics 
         # h1 has fast connection
         # h2 has slow uplink connection
@@ -152,12 +152,12 @@ class BBTopo(Topo):
             k = BasicIntf
         else:
             k = PIEIntf 
-        self.addLink(host1, s0, cls1=k,
-                   bw=args.bw_host, delay=args.delay, loss=0, 
-                   max_queue_size=args.maxq, use_htb=True)
-        self.addLink(host2, s0, cls2=BasicIntf,
-                   bw=args.bw_net, delay=args.delay, loss=0, 
-                   max_queue_size=args.maxq, use_htb=True)
+        self.addLink(h1, s0, cls1=k,cls2=BasicIntf,
+                   bw=args.bw_host, delay=args.delay, 
+                   max_queue_size=args.maxq)
+        self.addLink(h2, s0, cls1=k, cls2=BasicIntf,
+                   bw=args.bw_net, delay=args.delay, 
+                   max_queue_size=args.maxq)
 
 
         return
@@ -299,9 +299,9 @@ def getWebStats(net):
         now = time()
         delta = now - start_time
 
-        if delta > args.time+10:
+        if delta > args.time-100:
             break
-        print "%.1fs left..." % (args.time +10  - delta)
+        print "%.1fs left..." % (args.time -100  - delta)
     print "The meassurements are:"
     print times
    
