@@ -87,11 +87,15 @@ class TwoSwitchTopo(Topo):
         s2 = self.addSwitch('s2', inNamespace=True)
 
         # TODO: create hosts and add appropriate links between hosts and switches
-                
+        h1 = self.addHost('h1')
+        h2 = self.addHost('h2')
+        h3 = self.addHost('h3')
+        h4 = self.addHost('h4')
+        h5 = self.addHost('h5')        
 
 
         # TODO: create link between switches, notice that the delay is different
-	
+        	
 	# Hint: you can use **link_params to pass parameters when creating links
 	# Hint: remember to enable PIE for these links: for links between hosts and
 	# switches, mimic bufferbloat.py, PIE should sit on the switch side; for the

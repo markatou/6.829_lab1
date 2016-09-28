@@ -13,7 +13,7 @@ bwhost=1000
 # link be?  Set this value correctly.
 pie=0
 iperf_port=5001
-delay=5
+delay=10
 maxq=100
 flows=1
 dir=n1-nopie

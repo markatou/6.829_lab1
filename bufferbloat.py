@@ -152,11 +152,11 @@ class BBTopo(Topo):
             k = BasicIntf
         else:
             k = PIEIntf 
-        self.addLink(h1, s0, cls1=k,
-                   bw=args.bw_host, delay=args.delay, 
+        self.addLink(h1, s0, cls1=BasicIntf, cls2=k,
+                   bw=args.bw_host, delay=str(args.delay)+'ms', 
                    max_queue_size=args.maxq)
-        self.addLink(h2, s0, cls2=BasicIntf,
-                   bw=args.bw_net, delay=args.delay, 
+        self.addLink(h2, s0, cls1=BasicIntf, cls2=k,
+                   bw=args.bw_net, delay=str(args.delay)+'ms', 
                    max_queue_size=args.maxq)
 
 
