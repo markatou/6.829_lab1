@@ -87,6 +87,8 @@ class TwoSwitchTopo(Topo):
         s2 = self.addSwitch('s2', inNamespace=True)
 
         # TODO: create hosts and add appropriate links between hosts and switches
+                
+
 
         # TODO: create link between switches, notice that the delay is different
 	

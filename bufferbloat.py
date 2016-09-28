@@ -152,10 +152,10 @@ class BBTopo(Topo):
             k = BasicIntf
         else:
             k = PIEIntf 
-        self.addLink(h1, s0, cls1=k,cls2=BasicIntf,
+        self.addLink(h1, s0, cls1=k,
                    bw=args.bw_host, delay=args.delay, 
                    max_queue_size=args.maxq)
-        self.addLink(h2, s0, cls1=k, cls2=BasicIntf,
+        self.addLink(h2, s0, cls2=BasicIntf,
                    bw=args.bw_net, delay=args.delay, 
                    max_queue_size=args.maxq)
 
@@ -267,7 +267,15 @@ def bufferbloat():
     # Now use the curl command to fetch webpage from the webserver you
     # spawned on host h1 (not from google!)
     # Hint: Where is the webserver located?
+    
+
+
+
+
     getWebStats(net)
+    
+
+
     # Hint: have a separate function to do this and you may find the
     # loop below useful.h2=net, h1=house
     # TODO: compute average (and standard deviation) of the fetch

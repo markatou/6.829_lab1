@@ -6,7 +6,7 @@
 # Solve a problem where cgroups does not start automatically
 service cgroup-lite restart 2>&1 > /dev/null
 
-time=200
+time=150
 bwnet=10
 bwhost=1000
 # TODO: If you want the RTT to be 20ms what should the delay on each
@@ -45,6 +45,9 @@ pie=1
 mn -c
 python bufferbloat.py --time $time --bw-host $bwhost --flows $flows --pie $pie --bw-net $bwnet  --delay $delay --maxq $maxq  --dir $dir
 
+python plot_tcpprobe.py -f $dir/cwnd.txt -o $dir/cwnd-iperf.png -p $iperf_port
+python plot_queue.py -f $dir/q.txt -o $dir/q.png
+python plot_ping.py -f $dir/ping.txt -o $dir/rtt.png
 
 
 # TODO: Similarly, repeat the same thing, but with PIE turning on, 
@@ -59,6 +62,9 @@ flows=10
 mn -c
 python bufferbloat.py --time $time --bw-host $bwhost --flows $flows --pie $pie --bw-net $bwnet  --delay $delay --maxq $maxq  --dir $dir
 
+python plot_tcpprobe.py -f $dir/cwnd.txt -o $dir/cwnd-iperf.png -p $iperf_port
+python plot_queue.py -f $dir/q.txt -o $dir/q.png
+python plot_ping.py -f $dir/ping.txt -o $dir/rtt.png
 
 
 
