@@ -15,7 +15,7 @@ from mininet.net import Mininet
 from mininet.nodelib import LinuxBridge
 from mininet.topo import Topo
 from time import sleep
-
+import numpy
 
 class CustomMininet(Mininet):
     """A Mininet with some custom features."""
@@ -154,20 +154,33 @@ def main():
     print "Starting h1 iperf server..."
     server = h1.popen("iperf -s -w 16m")
     print 'Open iperf connections h2->h1, and h5->h1'
-    h21 = h2.popen("iperf -c %s -t 500 -P 10 | grep SUM > T21-a.out" % (h1.IP()), shell = True)
-    h51 = h5.popen("iperf -c %s -t 500 -P 10 | grep SUM > T51-a.out" % (h1.IP()), shell = True)
-    sleep(100) 
+    h21 = h2.popen("iperf -c %s -t 100 -P 10 | grep SUM > T21-a.out" % (h1.IP()), shell = True)
+    h51 = h5.popen("iperf -c %s -t 100 -P 10 | grep SUM > T51-a.out" % (h1.IP()), shell = True)
+    print "About to sleep"
+    sleep(110) 
 
     print "Starting ping train h2->h1"
     PT1 = h2.popen("ping -i 0.1 %s > RTT21-a.out" %( h1.IP()), shell = True)
    
     print "Starting ping train h5->h1"
-    PT2 = h5.popen("ping -i 0.1 %s > RTT15-a.out" %( h1.IP()), shell = True)
+    PT2 = h5.popen("ping -i 0.1 %s > RTT51-a.out" %( h1.IP()), shell = True)
     
     print "Print about to sleep"
-    sleep(100)
+    sleep(50)
+
     print 'Trying to get RTT'
+    print 'h2->h1' 
     print getRTT('RTT21-a.out') 
+    print 'h5->h1' 
+    print getRTT('RTT51-a.out')
+
+    print 'Throughput:'
+    print "Throughput h5->h1"
+    print getT('T51-a.out')
+    print "Throughput h2->h1"
+    print getT('T21-a.out')
+
+
     print "Killing"
     PT1.kill()
     PT2.kill()
@@ -179,20 +192,43 @@ def main():
     server = h3.popen("iperf -s -w 16m") 
    
     print 'Open iperf connections h4->h3, h2->h1, and h5->h1'
-    h43 = h4.popen("iperf -c %s -t 500 -P 10 | grep SUM > T43-b.out" % (h3.IP()), shell = True)
-    h21 = h2.popen("iperf -c %s -t 500 -P 10 | grep SUM > T21-b.out" % (h1.IP()), shell = True)
-    h51 = h5.popen("iperf -c %s -t 500 -P 10 | grep SUM > T51-b.out" % (h1.IP()), shell = True)
-    sleep(100)
+    h43 = h4.popen("iperf -c %s -t 100 -P 10 | grep SUM > T43-b.out" % (h3.IP()), shell = True)
+    h21 = h2.popen("iperf -c %s -t 100 -P 10 | grep SUM > T21-b.out" % (h1.IP()), shell = True)
+    h51 = h5.popen("iperf -c %s -t 100 -P 10 | grep SUM > T51-b.out" % (h1.IP()), shell = True)
+    print "About to sleep"
+    sleep(110)
     print "Starting ping trains h2->h1, h5->h1, h4->h3"
-    PT3 = h4.popen("ping -i 0.1 %s > RTT34-b.out" %( h3.IP()), shell = True)
-    PT2 = h5.popen("ping -i 0.1 %s > RTT15-b.out" %( h1.IP()), shell = True)
-    PT1 = h2.popen("ping -i 0.1 %s > RTT12-b.out" %( h1.IP()), shell = True)
- 
-
+    PT3 = h4.popen("ping -i 0.1 %s > RTT43-b.out" %( h3.IP()), shell = True)
+    PT2 = h5.popen("ping -i 0.1 %s > RTT51-b.out" %( h1.IP()), shell = True)
+    PT1 = h2.popen("ping -i 0.1 %s > RTT21-b.out" %( h1.IP()), shell = True)
     print "Print about to sleep"
-    sleep(100)
+    sleep(50)
 
-    
+    print 'RTTs:'
+    print 'h2->h1' 
+    print getRTT('RTT21-b.out')
+    print 'h5->h1' 
+    print getRTT('RTT51-b.out')
+    print 'h4->h3' 
+    print getRTT('RTT43-b.out')
+
+
+    print 'Throughput:'
+    print "Throughput h4->h3"
+    print getT('T43-b.out')
+    print "Throughput h5->h1"
+    print getT('T51-b.out')
+    print "Throughput h2->h1"
+    print getT('T21-b.out')
+
+
+    print "Killing"
+    h43.kill()
+    h21.kill()
+    h51.kill()
+    PT1.kill()
+    PT2.kill()
+    PT3.kill() 
 
 
     net.stop()
@@ -202,7 +238,6 @@ def getRTT(fileName):
     times = []
 
     while True:
-        print 'k'
         L =  f.readline()
         if L == "":
            break 
@@ -213,7 +248,11 @@ def getRTT(fileName):
            times.append(float(n))
     return numpy.average(times)
 
-
+def getT(fileName):
+    f = open(fileName, 'r')
+    k = f.readline()
+    z = k.find('Bytes')
+    return k[z+7:-10]
 
 
 
