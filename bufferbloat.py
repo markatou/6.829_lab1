@@ -303,9 +303,9 @@ def getWebStats(net):
         now = time()
         delta = now - start_time
 
-        if delta > args.time-100:
+        if delta > args.time:
             break
-        print "%.1fs left..." % (args.time -100  - delta)
+        print "%.1fs left..." % (args.time  - delta)
     print "The meassurements are:"
     print times
    

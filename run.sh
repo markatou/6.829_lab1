@@ -6,7 +6,7 @@
 # Solve a problem where cgroups does not start automatically
 service cgroup-lite restart 2>&1 > /dev/null
 
-time=200
+time=60
 bwnet=10
 bwhost=1000
 # TODO: If you want the RTT to be 20ms what should the delay on each

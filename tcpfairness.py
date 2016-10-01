@@ -155,15 +155,15 @@ def main():
     print "Starting h1 iperf server..."
     server = h1.popen("iperf -s -w 16m")
     print 'Open iperf connections h2->h1, and h5->h1'
-    h21 = h2.popen("iperf -c %s -t 100 -P 10 -i 1 | grep SUM > T21-a.out" % (h1.IP()), shell = True)
-    h51 = h5.popen("iperf -c %s -t 100 -P 10 -i 1 | grep SUM > T51-a.out" % (h1.IP()), shell = True)
+    h21 = h2.popen("iperf -c %s -t 200 -P 10 -i 1 | grep SUM > T21-a.out" % (h1.IP()), shell = True)
+    h51 = h5.popen("iperf -c %s -t 200 -P 10 -i 1 | grep SUM > T51-a.out" % (h1.IP()), shell = True)
 
     print "Starting ping train h2->h1, h5->h1"
     PT1 = h2.popen("ping -i 0.1 %s > RTT21-a.out" %( h1.IP()), shell = True)
     PT2 = h5.popen("ping -i 0.1 %s > RTT51-a.out" %( h1.IP()), shell = True)
     
-    for i in tqdm(range(100)):
-        sleep(1.1)
+    for i in tqdm(range(250)):
+        sleep(1)
 
     print "Killing"
     net.stop
@@ -174,17 +174,17 @@ def main():
     server2 = h3.popen("iperf -s -w 16m") 
    
     print 'Open iperf connections h4->h3, h2->h1, and h5->h1'
-    h43 = h4.popen("iperf -c %s -t 100 -P 10 -i 1| grep SUM > T43-b.out" % (h3.IP()), shell = True)
-    h21 = h2.popen("iperf -c %s -t 100 -P 10 -i 1| grep SUM > T21-b.out" % (h1.IP()), shell = True)
-    h51 = h5.popen("iperf -c %s -t 100 -P 10 -i 1| grep SUM > T51-b.out" % (h1.IP()), shell = True)
+    h43 = h4.popen("iperf -c %s -t 200 -P 10 -i 1| grep SUM > T43-b.out" % (h3.IP()), shell = True)
+    h21 = h2.popen("iperf -c %s -t 200 -P 10 -i 1| grep SUM > T21-b.out" % (h1.IP()), shell = True)
+    h51 = h5.popen("iperf -c %s -t 200 -P 10 -i 1| grep SUM > T51-b.out" % (h1.IP()), shell = True)
    
     print "Starting ping trains h2->h1, h5->h1, h4->h3"
     PT3 = h4.popen("ping -i 0.1 %s > RTT43-b.out" %( h3.IP()), shell = True)
     PT2 = h5.popen("ping -i 0.1 %s > RTT51-b.out" %( h1.IP()), shell = True)
     PT1 = h2.popen("ping -i 0.1 %s > RTT21-b.out" %( h1.IP()), shell = True)
 
-    for i in tqdm(range(100)):
-        sleep(1.1)
+    for i in tqdm(range(250)):
+        sleep(1)
 
     print 'RTT1: h2->h1 ' + str(getRTT('RTT21-a.out'))+' h5->h1 '+str(getRTT('RTT51-a.out'))
     print 'RTT2: h2->h1 ' + str(getRTT('RTT21-b.out'))+' h5->h1 '+str(getRTT('RTT51-b.out'))+' h4->h3 '+str(getRTT('RTT43-b.out'))
@@ -237,5 +237,4 @@ def getT(fileName):
 
 
 if __name__ == '__main__':
-    #getT('T51-a.out') 
     main()
