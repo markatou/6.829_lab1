@@ -152,12 +152,8 @@ class BBTopo(Topo):
             k = BasicIntf
         else:
             k = PIEIntf 
-        self.addLink(h1, s0, cls1=BasicIntf, cls2=k,
-                   bw=args.bw_host, delay=str(args.delay)+'ms', 
-                   max_queue_size=args.maxq)
-        self.addLink(h2, s0, cls1=BasicIntf, cls2=k,
-                   bw=args.bw_net, delay=str(args.delay)+'ms', 
-                   max_queue_size=args.maxq)
+        self.addLink(h1, s0, cls1=BasicIntf, cls2=k, bw=args.bw_host, delay=str(args.delay)+'ms', max_queue_size=args.maxq)
+        self.addLink(h2, s0, cls1=BasicIntf, cls2=k, bw=args.bw_net, delay=str(args.delay)+'ms',  max_queue_size=args.maxq)
 
 
         return
@@ -314,8 +310,8 @@ def getWebStats(net):
     print times
    
     print "On average we fetch the webpage in:"
-    print np.mean(times)
-
+    print np.average(times)
+    print np.std(times)
 
 
 

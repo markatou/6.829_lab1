@@ -6,14 +6,14 @@
 # Solve a problem where cgroups does not start automatically
 service cgroup-lite restart 2>&1 > /dev/null
 
-time=150
+time=200
 bwnet=10
 bwhost=1000
 # TODO: If you want the RTT to be 20ms what should the delay on each
 # link be?  Set this value correctly.
 pie=0
 iperf_port=5001
-delay=10
+delay=5
 maxq=100
 flows=1
 dir=n1-nopie

@@ -3,7 +3,7 @@ Plot ping RTTs over time
 '''
 from helper import *
 import plot_defaults
-
+import numpy
 from matplotlib.ticker import MaxNLocator
 from pylab import figure
 
@@ -45,13 +45,14 @@ def parse_ping(fname):
 m.rc('figure', figsize=(16, 6))
 fig = figure()
 ax = fig.add_subplot(111)
+t = []
 for i, f in enumerate(args.files):
     data = parse_ping(f)
     xaxis = map(float, col(0, data))
     start_time = xaxis[0]
     xaxis = map(lambda x: (x - start_time) / args.freq, xaxis)
     qlens = map(float, col(1, data))
-
+    t.append(data)
     ax.plot(xaxis, qlens, lw=2)
     ax.xaxis.set_major_locator(MaxNLocator(4))
 
